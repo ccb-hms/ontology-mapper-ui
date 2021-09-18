@@ -1,0 +1,13 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: ontology-mapper-api
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    image: ontology-mapper-client
+    ports:
+      - "3000:80"
