@@ -1,0 +1,6 @@
+[submodule "ontology-mapper"]
+	path = ontology-mapper
+	url = https://github.com/ccb-hms/ontology-mapper.git
+[submodule "flask-api/ontology-mapper"]
+	path = flask-api/ontology-mapper
+	url = https://github.com/ccb-hms/ontology-mapper-ui.git
