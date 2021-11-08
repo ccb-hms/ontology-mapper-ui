@@ -1,0 +1,16 @@
+Source Term,Mapped Term Label,Mapped Term Identifier,Ontology,Score
+Vascular disorders of intestine,vascular disease,http://www.ebi.ac.uk/efo/EFO_0004264,http://www.ebi.ac.uk/efo/efo.owl#,0.737182712650141
+Vascular disorders of intestine,intestinal disease,http://www.ebi.ac.uk/efo/EFO_0009431,http://www.ebi.ac.uk/efo/efo.owl#,0.6979115665580694
+Vascular disorders of intestine,ocular vascular disease,http://www.ebi.ac.uk/efo/EFO_0005753,http://www.ebi.ac.uk/efo/efo.owl#,0.674404723162216
+Gonarthrosis,osteoarthritis,http://www.ebi.ac.uk/efo/EFO_0002506,http://www.ebi.ac.uk/efo/efo.owl#,0.643283287815114
+Gonarthrosis,Hemarthrosis,http://www.ebi.ac.uk/efo/EFO_1001344,http://www.ebi.ac.uk/efo/efo.owl#,0.5430601144123481
+Gonarthrosis,hydrarthrosis,http://purl.obolibrary.org/obo/MONDO_0003366,http://www.ebi.ac.uk/efo/efo.owl#,0.49339684422029145
+Psoriatic and enteropathic arthropathies,psoriatic arthritis,http://www.ebi.ac.uk/efo/EFO_0003778,http://www.ebi.ac.uk/efo/efo.owl#,0.739219795879504
+Psoriatic and enteropathic arthropathies,neurogenic arthropathy,http://www.ebi.ac.uk/efo/EFO_1001378,http://www.ebi.ac.uk/efo/efo.owl#,0.693439369919245
+Psoriatic and enteropathic arthropathies,Abnormal intestine morphology,http://purl.obolibrary.org/obo/HP_0002242,http://www.ebi.ac.uk/efo/efo.owl#,0.571469450900229
+Pain associated with micturition,Syndromic microphthalmia,http://www.orpha.net/ORDO/Orphanet_202948,http://www.ebi.ac.uk/efo/efo.owl#,0.5659300513356651
+Pain associated with micturition,Syndromic hyperopia,http://www.orpha.net/ORDO/Orphanet_98622,http://www.ebi.ac.uk/efo/efo.owl#,0.5621129136881389
+Pain associated with micturition,Pulmonary arterial hypertension associated with HIV infection,http://www.ebi.ac.uk/efo/EFO_0009194,http://www.ebi.ac.uk/efo/efo.owl#,0.5566384479277221
+Other mood,mood disorder,http://www.ebi.ac.uk/efo/EFO_0004247,http://www.ebi.ac.uk/efo/efo.owl#,0.7109888369276869
+Other mood,Emotional lability,http://purl.obolibrary.org/obo/HP_0000712,http://www.ebi.ac.uk/efo/efo.owl#,0.5871673536353661
+Other mood,dysthymic disorder,http://www.ebi.ac.uk/efo/EFO_0008623,http://www.ebi.ac.uk/efo/efo.owl#,0.5534220556381106
