@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import { Results, Home } from "./results/Results";
+import { Results } from "./results/Results";
+import Home from "./Home";
 import "./App.css";
 
 function App() {
     const [currentTime, setCurrentTime] = useState(0);
-    useEffect(() => {
-        fetch("/api/time")
-            .then(res => res.json())
-            .then(data => {
-                setCurrentTime(data.time);
-            });
-    });
+    // useEffect(() => {
+    //     fetch("/api/time")
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             setCurrentTime(data.time);
+    //         });
+    // });
 
     return (
         <div className="App">
