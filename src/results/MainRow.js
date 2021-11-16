@@ -1,5 +1,6 @@
 import MappingType from "./MappingType";
 import ApproveReject from "./ApproveReject";
+import Ontology from "./Ontology";
 
 function MainRow(props) {
     const row = props.row;
@@ -11,7 +12,7 @@ function MainRow(props) {
                 {row["Mapped Term Identifier"]}
             </td>
             <td key="Score">{parseFloat(row["Score"]).toFixed(3)}</td>
-            <td key="Ontology">Ontology To Come</td>
+            <Ontology />
             <MappingType
                 edited={props.editedCell === "Mapping Type"}
                 setEdit={() => props.setEditedCell("Mapping Type")}
