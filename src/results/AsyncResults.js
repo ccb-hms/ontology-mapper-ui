@@ -1,6 +1,7 @@
 import Async from "react-async";
 import Results from "./Results";
 import Papa from "papaparse";
+import { default as _ } from "lodash";
 
 async function getData() {
     const response = await fetch("small.csv");
@@ -12,6 +13,8 @@ async function getData() {
     // https://stackoverflow.com/a/61420376
     await Papa.parse(csv, {
         header: true,
+        skipEmptyLines: true,
+        transformHeader: header => _.snakeCase(header),
         step: function(result) {
             data.push(result.data);
         },

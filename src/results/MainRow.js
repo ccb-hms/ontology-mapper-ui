@@ -1,17 +1,22 @@
 import MappingType from "./MappingType";
 import ApproveReject from "./ApproveReject";
 import Ontology from "./Ontology";
+import { default as _ } from "lodash";
 
 function MainRow(props) {
     const row = props.row;
+    const mdi = new URL(row.mapped_term_identifier).pathname;
+    const id = mdi.slice(_.lastIndexOf(mdi, "/") + 1);
     return (
-        <tr key={row["Mapped Term Identifier"]}>
-            <td key="Source Term">{row["Source Term"]}</td>
-            <td key="Mapped Term Label">{row["Mapped Term Label"]}</td>
-            <td key="Mapped Term Identifier">
-                {row["Mapped Term Identifier"]}
+        <tr key={id}>
+            <td key="Source Term">{row.source_term}</td>
+            <td key="Mapped Term Label">
+                <a href={row.mapped_term_identifier}>
+                    <p>{row.mapped_term_label}</p>
+                    <p>{`[${id}]`}</p>
+                </a>
             </td>
-            <td key="Score">{parseFloat(row["Score"]).toFixed(3)}</td>
+            <td key="Score">{parseFloat(row.score).toFixed(3)}</td>
             <Ontology />
             <MappingType
                 edited={props.editedCell === "Mapping Type"}

@@ -1,61 +1,57 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import TermRow from "./TermRow";
 import { default as _ } from "lodash";
 import { default as download } from "downloadjs";
 
-// let data = [];
-//
-// async function getData() {
-//     fetch("small.csv")
-//         .then(response => {
-//             const reader = response.body.getReader();
-//             return reader.read();
-//         })
-//         .then(result => {
-//             const decoder = new TextDecoder("utf-8");
-//             return decoder.decode(result.value);
-//         })
-//         .then(result =>
-//             // https://stackoverflow.com/a/61420376
-//             Papa.parse(result, {
-//                 header: true,
-//                 step: function(result) {
-//                     data.push(result.data);
-//                 },
-//                 complete: function(results, file) {
-//                     console.log("parsing complete");
-//                 },
-//             })
-//         );
-// }
-// getData();
+const columns = [
+    "Source Term",
+    "Mapped Term Label",
+    "Score",
+    "Ontology",
+    "Mapping Type",
+    "View Alternate Mappings",
+    "Approve or Reject Mappings",
+];
 
 export default function Results(props) {
-    console.log(props.data);
-    const columns = [
-        "Source Term",
-        "Mapped Term Label",
-        "Mapped Term Identifier",
-        "Score",
-        "Ontology",
-        "Mapping Type",
-        "View Alternate Mappings",
-        "Approve or Reject Mappings",
-    ];
+    function initialData() {
+        const grouped = _.groupBy(
+            _.map(props.data, row => ({ ...row, status: "unapproved" })),
+            "source_term"
+        );
+        const selected = _.mapValues(grouped, group =>
+            _.map(group, (row, i) =>
+                i === 0
+                    ? { ...row, selected: true }
+                    : { ...row, selected: false }
+            )
+        );
+        return selected;
+    }
+    const [data, setData] = useState(initialData());
+    const sourceTerms = _.uniq(_.map(props.data, "source_term"));
 
-    const groupedData = _.groupBy(props.data, "Source Term");
-    const sourceTerms = _.compact(
-        _.map(_.uniqBy(props.data, "Source Term"), _.property("Source Term"))
-    );
-
-    let initialStatus = {};
-    _.forEach(sourceTerms, term => {
-        initialStatus[term] = "unapproved";
-    });
-
-    const [status, setStatus] = useState(initialStatus);
-
-    const counts = _.countBy(status, v => v);
+    function changeField(source_term, index, field, value) {
+        setData({
+            ...data,
+            [source_term]: _.map(data[source_term], (row, i) =>
+                i === index ? { ...row, [field]: value } : row
+            ),
+        });
+    }
+    const [statusCounts, setStatusCounts] = useState({});
+    useEffect(() => {
+        setStatusCounts(
+            _.countBy(
+                _.compact(
+                    _.flatMap(data, rows =>
+                        _.map(rows, row => (row.selected ? row.status : null))
+                    )
+                ),
+                v => v
+            )
+        );
+    }, [data]);
 
     const tableRef = useRef();
 
@@ -82,9 +78,9 @@ export default function Results(props) {
     return (
         <div>
             <div>
-                {`${sourceTerms.length} terms total; ${counts.approved ||
-                    0} approved, ${counts.rejected ||
-                    0} rejected, ${counts.unapproved || 0} unapproved`}
+                {`${sourceTerms.length} terms total; ${statusCounts.approved ||
+                    0} approved, ${statusCounts.rejected ||
+                    0} rejected, ${statusCounts.unapproved || 0} unapproved`}
             </div>
             <button onClick={downloadTable}>Download</button>
             <table ref={tableRef}>
@@ -96,12 +92,12 @@ export default function Results(props) {
                     </tr>
                 </thead>
                 <tbody>
-                    {sourceTerms.map(term => (
+                    {sourceTerms.map((term, i) => (
                         <TermRow
                             key={term}
-                            rows={groupedData[term]}
-                            setStatus={value =>
-                                setStatus({ ...status, [term]: value })
+                            rows={data[term]}
+                            changeField={(field, value) =>
+                                changeField(term, i, field, value)
                             }
                         />
                     ))}
