@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import { Results } from "./results/Results";
+import AsyncResults from "./results/AsyncResults";
 import Home from "./Home";
 import "./App.css";
 
@@ -23,7 +23,7 @@ function App() {
             </nav>
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/results" element={<Results />} />
+                <Route path="/results" element={<AsyncResults />} />
             </Routes>
         </div>
     );

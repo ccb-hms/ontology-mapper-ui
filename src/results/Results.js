@@ -1,37 +1,37 @@
 import { useState, useRef } from "react";
-import Papa from "papaparse";
 import TermRow from "./TermRow";
 import { default as _ } from "lodash";
 import { default as download } from "downloadjs";
 
-let data = [];
+// let data = [];
+//
+// async function getData() {
+//     fetch("small.csv")
+//         .then(response => {
+//             const reader = response.body.getReader();
+//             return reader.read();
+//         })
+//         .then(result => {
+//             const decoder = new TextDecoder("utf-8");
+//             return decoder.decode(result.value);
+//         })
+//         .then(result =>
+//             // https://stackoverflow.com/a/61420376
+//             Papa.parse(result, {
+//                 header: true,
+//                 step: function(result) {
+//                     data.push(result.data);
+//                 },
+//                 complete: function(results, file) {
+//                     console.log("parsing complete");
+//                 },
+//             })
+//         );
+// }
+// getData();
 
-async function getData() {
-    fetch("small.csv")
-        .then(response => {
-            const reader = response.body.getReader();
-            return reader.read();
-        })
-        .then(result => {
-            const decoder = new TextDecoder("utf-8");
-            return decoder.decode(result.value);
-        })
-        .then(result =>
-            // https://stackoverflow.com/a/61420376
-            Papa.parse(result, {
-                header: true,
-                step: function(result) {
-                    data.push(result.data);
-                },
-                complete: function(results, file) {
-                    console.log("parsing complete");
-                },
-            })
-        );
-}
-getData();
-
-export function Results() {
+export default function Results(props) {
+    console.log(props.data);
     const columns = [
         "Source Term",
         "Mapped Term Label",
@@ -43,9 +43,9 @@ export function Results() {
         "Approve or Reject Mappings",
     ];
 
-    const groupedData = _.groupBy(data, "Source Term");
+    const groupedData = _.groupBy(props.data, "Source Term");
     const sourceTerms = _.compact(
-        _.map(_.uniqBy(data, "Source Term"), _.property("Source Term"))
+        _.map(_.uniqBy(props.data, "Source Term"), _.property("Source Term"))
     );
 
     let initialStatus = {};
