@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from "react";
-import TermRow from "./TermRow";
+import { useState, useEffect } from "react";
 import { default as _ } from "lodash";
-import { default as download } from "downloadjs";
+import { CSVLink } from "react-csv";
 
-const columns = [
+import TermRows from "./TermRows";
+
+const table_columns = [
     "Source Term",
     "Mapped Term Label",
     "Score",
@@ -13,10 +14,34 @@ const columns = [
     "Approve or Reject Mappings",
 ];
 
+const csv_headers = _.map(
+    [
+        "Source Term",
+        "Mapped Term Label",
+        "Mapped Term Identifier",
+        "Score",
+        "Mapping Type",
+        "Status",
+    ],
+    t => ({ label: t, key: _.snakeCase(t) })
+);
+
 export default function Results(props) {
     function initialData() {
+        // extract the identifier from the URL
+
+        // set up data to be grouped by source term and have additional fields
         const grouped = _.groupBy(
-            _.map(props.data, row => ({ ...row, status: "unapproved" })),
+            _.map(props.data, row => {
+                const mti = new URL(row.mapped_term_identifier).pathname;
+                const id = mti.slice(_.lastIndexOf(mti, "/") + 1);
+                return {
+                    ...row,
+                    status: "unapproved",
+                    mapping_type: "exact",
+                    id: id,
+                };
+            }),
             "source_term"
         );
         const selected = _.mapValues(grouped, group =>
@@ -28,10 +53,13 @@ export default function Results(props) {
         );
         return selected;
     }
+
     const [data, setData] = useState(initialData());
+    // get source terms in order they appeared in original output
     const sourceTerms = _.uniq(_.map(props.data, "source_term"));
 
     function changeField(source_term, index, field, value) {
+        // for the index'ed row of source_term, change the value of field
         setData({
             ...data,
             [source_term]: _.map(data[source_term], (row, i) =>
@@ -39,8 +67,24 @@ export default function Results(props) {
             ),
         });
     }
+
+    function setSelected(source_term, index) {
+        // for a source term, set the option at index to selected and all other options to unselected
+        setData({
+            ...data,
+            [source_term]: _.map(data[source_term], (row, i) =>
+                i === index
+                    ? { ...row, selected: true }
+                    : { ...row, selected: false }
+            ),
+        });
+    }
+
+    // keep track of the statuses for the stat descriptor at the top
     const [statusCounts, setStatusCounts] = useState({});
+
     useEffect(() => {
+        // calculate the counts of each status option
         setStatusCounts(
             _.countBy(
                 _.compact(
@@ -53,28 +97,6 @@ export default function Results(props) {
         );
     }, [data]);
 
-    const tableRef = useRef();
-
-    function downloadTable() {
-        const html = tableRef.current;
-        let data = [];
-        const rows = html.querySelectorAll("table tr");
-
-        for (var i = 0; i < rows.length; i++) {
-            var row = [],
-                cols = rows[i].querySelectorAll("td, th");
-
-            for (var j = 0; j < cols.length; j++) {
-                if (j !== 4 && j !== 6) {
-                    row.push(cols[j].innerText);
-                }
-            }
-            data.push(row.join(","));
-        }
-        data = data.join("\n");
-        download(data, "test-download.csv", "text/plain");
-    }
-
     return (
         <div>
             <div>
@@ -82,23 +104,33 @@ export default function Results(props) {
                     0} approved, ${statusCounts.rejected ||
                     0} rejected, ${statusCounts.unapproved || 0} unapproved`}
             </div>
-            <button onClick={downloadTable}>Download</button>
-            <table ref={tableRef}>
+            <CSVLink
+                data={_.filter(
+                    _.flatMap(data, v => v),
+                    "selected"
+                )}
+                headers={csv_headers}
+                filename={"mapping-output.csv"}
+            >
+                Download
+            </CSVLink>
+            <table>
                 <thead>
                     <tr>
-                        {columns.map(c => (
+                        {table_columns.map(c => (
                             <th key={c}>{c}</th>
                         ))}
                     </tr>
                 </thead>
                 <tbody>
                     {sourceTerms.map((term, i) => (
-                        <TermRow
+                        <TermRows
                             key={term}
                             rows={data[term]}
-                            changeField={(field, value) =>
+                            changeField={(i, field, value) =>
                                 changeField(term, i, field, value)
                             }
+                            setSelected={i => setSelected(term, i)}
                         />
                     ))}
                 </tbody>

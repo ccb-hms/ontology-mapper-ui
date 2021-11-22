@@ -19,14 +19,14 @@ const edges = new DataSet([
     { from: 3, to: 3 },
 ]);
 
-export default function Ontology(props) {
+export default function OntologyCell(props) {
     const cellRef = useRef();
     useEffect(() => {
         const data = {
             nodes: nodes,
             edges: edges,
         };
-        const network = new Network(cellRef.current, data, {});
+        new Network(cellRef.current, data, {});
     }, []);
 
     return <td ref={cellRef}>Test</td>;
