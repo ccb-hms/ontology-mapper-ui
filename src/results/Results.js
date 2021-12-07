@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { default as _ } from "lodash";
 import { CSVLink } from "react-csv";
 
+import "./bootstrap.min.css";
+import "./Results.css";
+
 import TermRows from "./TermRows";
 
 const table_columns = [
@@ -23,7 +26,7 @@ const csv_headers = _.map(
         "Mapping Type",
         "Status",
     ],
-    t => ({ label: t, key: _.snakeCase(t) })
+    (t) => ({ label: t, key: _.snakeCase(t) })
 );
 
 export default function Results(props) {
@@ -32,7 +35,7 @@ export default function Results(props) {
 
         // set up data to be grouped by source term and have additional fields
         const grouped = _.groupBy(
-            _.map(props.data, row => {
+            _.map(props.data, (row) => {
                 const mti = new URL(row.mapped_term_identifier).pathname;
                 const id = mti.slice(_.lastIndexOf(mti, "/") + 1);
                 return {
@@ -44,7 +47,7 @@ export default function Results(props) {
             }),
             "source_term"
         );
-        const selected = _.mapValues(grouped, group =>
+        const selected = _.mapValues(grouped, (group) =>
             _.map(group, (row, i) =>
                 i === 0
                     ? { ...row, selected: true }
@@ -88,11 +91,11 @@ export default function Results(props) {
         setStatusCounts(
             _.countBy(
                 _.compact(
-                    _.flatMap(data, rows =>
-                        _.map(rows, row => (row.selected ? row.status : null))
+                    _.flatMap(data, (rows) =>
+                        _.map(rows, (row) => (row.selected ? row.status : null))
                     )
                 ),
-                v => v
+                (v) => v
             )
         );
     }, [data]);
@@ -100,13 +103,15 @@ export default function Results(props) {
     return (
         <div>
             <div>
-                {`${sourceTerms.length} terms total; ${statusCounts.approved ||
-                    0} approved, ${statusCounts.rejected ||
-                    0} rejected, ${statusCounts.unapproved || 0} unapproved`}
+                {`${sourceTerms.length} terms total; ${
+                    statusCounts.approved || 0
+                } approved, ${statusCounts.rejected || 0} rejected, ${
+                    statusCounts.unapproved || 0
+                } unapproved`}
             </div>
             <CSVLink
                 data={_.filter(
-                    _.flatMap(data, v => v),
+                    _.flatMap(data, (v) => v),
                     "selected"
                 )}
                 headers={csv_headers}
@@ -114,10 +119,10 @@ export default function Results(props) {
             >
                 Download
             </CSVLink>
-            <table>
-                <thead>
+            <table className="table">
+                <thead className="table-light">
                     <tr>
-                        {table_columns.map(c => (
+                        {table_columns.map((c) => (
                             <th key={c}>{c}</th>
                         ))}
                     </tr>
@@ -130,7 +135,7 @@ export default function Results(props) {
                             changeField={(i, field, value) =>
                                 changeField(term, i, field, value)
                             }
-                            setSelected={i => setSelected(term, i)}
+                            setSelected={(i) => setSelected(term, i)}
                         />
                     ))}
                 </tbody>

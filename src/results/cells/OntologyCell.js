@@ -2,6 +2,21 @@ import { Network } from "vis-network";
 import { DataSet } from "vis-data";
 import { useRef, useEffect } from "react";
 
+const staticOptions = {
+    layout: { hierarchical: { enabled: true, direction: "LR" } },
+    physics: { enabled: false },
+    interaction: { dragNodes: false, zoomView: false, dragView: false },
+    width: "100%",
+};
+
+const dynamicOptions = {
+    layout: { hierarchical: { enabled: true, direction: "LR" } },
+    physics: { enabled: false },
+    interaction: { dragNodes: false, zoomView: true, dragView: true },
+    width: "100%",
+    height: "500px",
+};
+
 const nodes = new DataSet([
     { id: 1, label: "Node 1" },
     { id: 2, label: "Node 2" },
@@ -21,13 +36,30 @@ const edges = new DataSet([
 
 export default function OntologyCell(props) {
     const cellRef = useRef();
+    let network = useRef();
     useEffect(() => {
         const data = {
             nodes: nodes,
             edges: edges,
         };
-        new Network(cellRef.current, data, {});
-    }, []);
+        if (network.current) {
+            network.current.destroy();
+        }
+        if (props.edited) {
+            network.current = new Network(
+                props.reference.current,
+                data,
+                dynamicOptions
+            );
+        } else {
+            network.current = new Network(cellRef.current, data, staticOptions);
+        }
+    }, [props.edited, props.reference]);
 
-    return <td ref={cellRef}>Test</td>;
+    return (
+        <td onClick={!props.edited ? props.setEdit : props.resetEditedCell}>
+            {props.edited && <div>Click To Minimize Ontology</div>}
+            <div ref={cellRef}></div>
+        </td>
+    );
 }
