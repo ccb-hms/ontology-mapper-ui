@@ -1,0 +1,58 @@
+thead .fixed-th {
+    background-color: #e2e2e2;
+}
+
+a {
+    color: #555;
+}
+
+a:hover {
+    color: #222;
+}
+
+button.btn {
+    margin: 1rem;
+}
+
+.table {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid black;
+}
+
+td.fixed-td {
+    background-color: #f8f9fa;
+}
+
+*.interact-td {
+    cursor: pointer;
+    font-weight: 500;
+}
+
+*.interact-td:hover {
+    background-color: #f8f9fa;
+}
+
+td.dark-interact-td {
+    cursor: pointer;
+    font-weight: 500;
+}
+
+td.dark-interact-td:hover {
+    filter: brightness(85%);
+    background-color: #f8f9fa;
+}
+
+.alt-row td {
+    background-color: #e2e2e2;
+}
+
+.alt-row td.fixed-td {
+    filter: brightness(85%);
+    background-color: #f8f9fa;
+}
+
+.full-size-ontology {
+    height: 500px;
+}
