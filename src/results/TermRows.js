@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { default as _ } from "lodash";
 import OntologyCell from "./cells/OntologyCell";
 import MappingTypeCell from "./cells/MappingTypeCell";
 import StatusCell from "./cells/StatusCell";
@@ -14,30 +15,38 @@ export const EditedCell = {
 
 function TermRows(props) {
     const [editedCell, setEditedCell] = useState(EditedCell.None);
-    const cell = useRef(null);
+    const ontologyRef = useRef(null);
     function resetEditedCell(e) {
         e.stopPropagation();
         setEditedCell(EditedCell.None);
     }
 
-    return props.rows.map(
+    const selected = _.filter(props.rows, "selected");
+    const alts = _.filter(props.rows, (r) => !r.selected);
+
+    return [...selected, ...alts].map(
         (row, index) =>
             (editedCell === EditedCell.ViewAltMappings || row.selected) && (
                 <>
-                    <tr key={row.id}>
-                        <td key="source_term">{row.source_term}</td>
-                        <td key="mapped_term_label">
+                    <tr key={row.id} className={!row.selected ? "alt-row" : ""}>
+                        <td className="fixed-td" key="source_term">
+                            {row.source_term}
+                        </td>
+                        <td className="fixed-td" key="mapped_term_label">
                             <a href={row.mapped_term_identifier}>
                                 <p>{row.mapped_term_label}</p>
                                 <p>{`[${row.id}]`}</p>
                             </a>
                         </td>
-                        <td key="score">{parseFloat(row.score).toFixed(3)}</td>
+                        <td key="score" className="fixed-td">
+                            {parseFloat(row.score).toFixed(3)}
+                        </td>
                         <OntologyCell
                             edited={editedCell === EditedCell.Ontology}
                             setEdit={() => setEditedCell(EditedCell.Ontology)}
                             resetEditedCell={resetEditedCell}
-                            reference={cell}
+                            reference={ontologyRef}
+                            selected={row.selected}
                         />
                         <MappingTypeCell
                             selected={row.selected}
@@ -81,8 +90,8 @@ function TermRows(props) {
                         <tr>
                             <td
                                 style={{ width: "100%" }}
-                                colSpan="6"
-                                ref={cell}
+                                colSpan="7"
+                                ref={ontologyRef}
                             ></td>
                         </tr>
                     )}

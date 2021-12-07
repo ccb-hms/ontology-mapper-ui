@@ -18,7 +18,7 @@ function App() {
         <div className="App">
             <p>The current time is {currentTime}.</p>
             <nav>
-                <Link to="/">Home</Link>
+                <Link to="/">Home</Link> {" | "}
                 <Link to="/results">Results</Link>
             </nav>
             <Routes>

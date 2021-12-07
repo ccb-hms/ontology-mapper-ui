@@ -9,7 +9,7 @@ import TermRows from "./TermRows";
 
 const table_columns = [
     "Source Term",
-    "Mapped Term Label",
+    "Mapped Term",
     "Score",
     "Ontology",
     "Mapping Type",
@@ -102,14 +102,17 @@ export default function Results(props) {
 
     return (
         <div>
-            <div>
-                {`${sourceTerms.length} terms total; ${
-                    statusCounts.approved || 0
-                } approved, ${statusCounts.rejected || 0} rejected, ${
-                    statusCounts.unapproved || 0
-                } unapproved`}
-            </div>
+            <p>
+                <b>
+                    {`${sourceTerms.length} terms total; ${
+                        statusCounts.approved || 0
+                    } approved, ${statusCounts.rejected || 0} rejected, ${
+                        statusCounts.unapproved || 0
+                    } unapproved`}
+                </b>
+            </p>
             <CSVLink
+                className="btn btn-secondary"
                 data={_.filter(
                     _.flatMap(data, (v) => v),
                     "selected"
@@ -123,7 +126,19 @@ export default function Results(props) {
                 <thead className="table-light">
                     <tr>
                         {table_columns.map((c) => (
-                            <th key={c}>{c}</th>
+                            <th
+                                className={
+                                    _.indexOf(
+                                        ["Source Term", "Mapped Term", "Score"],
+                                        c
+                                    ) !== -1
+                                        ? "fixed-th"
+                                        : ""
+                                }
+                                key={c}
+                            >
+                                {c}
+                            </th>
                         ))}
                     </tr>
                 </thead>

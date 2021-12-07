@@ -16,6 +16,7 @@ button.btn {
 
 .table {
     width: 95%;
+    margin-top: 1rem;
     margin-left: auto;
     margin-right: auto;
     border: 2px solid black;
@@ -41,7 +42,7 @@ td.dark-interact-td {
 
 td.dark-interact-td:hover {
     filter: brightness(85%);
-    background-color: #f8f9fa;
+    background-color: #e2e2e2;
 }
 
 .alt-row td {

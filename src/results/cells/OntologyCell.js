@@ -5,14 +5,24 @@ import { useRef, useEffect } from "react";
 const staticOptions = {
     layout: { hierarchical: { enabled: true, direction: "LR" } },
     physics: { enabled: false },
-    interaction: { dragNodes: false, zoomView: false, dragView: false },
+    interaction: {
+        dragNodes: false,
+        zoomView: false,
+        dragView: false,
+        selectable: false,
+    },
     width: "100%",
 };
 
 const dynamicOptions = {
     layout: { hierarchical: { enabled: true, direction: "LR" } },
     physics: { enabled: false },
-    interaction: { dragNodes: false, zoomView: true, dragView: true },
+    interaction: {
+        dragNodes: false,
+        zoomView: true,
+        dragView: true,
+        selectable: true,
+    },
     width: "100%",
     height: "500px",
 };
@@ -56,8 +66,12 @@ export default function OntologyCell(props) {
         }
     }, [props.edited, props.reference]);
 
+    const onClick = !props.edited ? props.setEdit : props.resetEditedCell;
     return (
-        <td onClick={!props.edited ? props.setEdit : props.resetEditedCell}>
+        <td
+            className={props.selected ? "interact-td" : ""}
+            onClick={props.selected ? onClick : null}
+        >
             {props.edited && <div>Click To Minimize Ontology</div>}
             <div ref={cellRef}></div>
         </td>
