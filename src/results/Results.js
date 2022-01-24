@@ -51,52 +51,56 @@ export default function Results(props) {
                 "source_term"
             )
         );
-        const selected = _.fromPairs(
-            _.map(grouped, (group, g) => [
-                group[0],
-                _.map(group[1], (row, i) => ({
-                    ...row,
-                    selected: i === 0,
-                    number: g + 1,
-                })),
-            ])
+        const selected = _.map(grouped, (group, g) =>
+            _.map(group[1], (row, i) => ({
+                ...row,
+                selected: i === 0,
+                number: g + 1,
+            }))
         );
-
-        return selected;
+        const sourceTerms = _.map(grouped, (group, g) => ({
+            term: group[0],
+            index: g,
+        }));
+        return [selected, sourceTerms];
     }
-
-    const [data, setData] = useState(initializeData());
+    const [initialData, sourceTerms] = initializeData();
+    const [data, setData] = useState(initialData);
     const [pageNumber, setPageNumber] = useState(1);
     // get source terms in order they appeared in original output
-    const sourceTerms = _.uniq(_.map(props.data, "source_term"));
-
     let currentSourceTerms = _.slice(
         sourceTerms,
         (pageNumber - 1) * 10,
         pageNumber * 10
     );
 
-    function changeField(source_term, index, field, value) {
+    function changeField(source_term_index, term_row_index, field, value) {
         // for the index'ed row of source_term, change the value of field
-        console.log(source_term, index, field, value);
-        setData({
-            ...data,
-            [source_term]: _.map(data[source_term], (row, i) =>
-                i === index ? { ...row, [field]: value } : row
-            ),
-        });
+        let newData = _.concat(
+            data.slice(0, source_term_index),
+            [
+                _.map(data[source_term_index], (row, i) =>
+                    i === term_row_index ? { ...row, [field]: value } : row
+                ),
+            ],
+            data.slice(source_term_index + 1)
+        );
+        setData(newData);
     }
 
-    function setSelected(source_term, index) {
+    function setSelected(source_term_index, term_row_index) {
         // for a source term, set the option at index to selected and all other options to unselected
-        setData({
-            ...data,
-            [source_term]: _.map(data[source_term], (row, i) =>
-                i === index
-                    ? { ...row, selected: true }
-                    : { ...row, selected: false }
-            ),
-        });
+        let newData = _.concat(
+            data.slice(0, source_term_index),
+            [
+                _.map(data[source_term_index], (row, i) => ({
+                    ...row,
+                    selected: i === term_row_index,
+                })),
+            ],
+            data.slice(source_term_index + 1)
+        );
+        setData(newData);
     }
 
     // keep track of the statuses for the stat descriptor at the top
@@ -173,14 +177,14 @@ export default function Results(props) {
                     </tr>
                 </thead>
                 <tbody>
-                    {currentSourceTerms.map((term, i) => (
+                    {currentSourceTerms.map((t, i) => (
                         <TermRows
-                            key={term}
-                            rows={data[term]}
+                            key={t.term}
+                            rows={data[t.index]}
                             changeField={(i, field, value) =>
-                                changeField(term, i, field, value)
+                                changeField(t.index, i, field, value)
                             }
-                            setSelected={(i) => setSelected(term, i)}
+                            setSelected={(i) => setSelected(t.index, i)}
                         />
                     ))}
                 </tbody>

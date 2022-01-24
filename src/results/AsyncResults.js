@@ -18,7 +18,6 @@ async function getData() {
         step: function (result) {
             data.push(result.data);
         },
-        preview: 40,
         complete: function (results, file) {
             // figure out how many returned per row
             return;
