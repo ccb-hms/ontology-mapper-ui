@@ -57,3 +57,7 @@ td.dark-interact-td:hover {
 .full-size-ontology {
     height: 500px;
 }
+
+.page-number-input {
+    width: 4em;
+}

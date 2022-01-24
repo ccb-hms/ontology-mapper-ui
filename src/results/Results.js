@@ -6,8 +6,10 @@ import "./bootstrap.min.css";
 import "./Results.css";
 
 import TermRows from "./TermRows";
+import PageBar from "./PageBar";
 
 const table_columns = [
+    "#",
     "Source Term",
     "Mapped Term",
     "Score",
@@ -19,6 +21,7 @@ const table_columns = [
 
 const csv_headers = _.map(
     [
+        "",
         "Source Term",
         "Mapped Term Label",
         "Mapped Term Identifier",
@@ -30,39 +33,52 @@ const csv_headers = _.map(
 );
 
 export default function Results(props) {
-    function initialData() {
-        // extract the identifier from the URL
-
+    function initializeData() {
         // set up data to be grouped by source term and have additional fields
-        const grouped = _.groupBy(
-            _.map(props.data, (row) => {
-                const mti = new URL(row.mapped_term_identifier).pathname;
-                const id = mti.slice(_.lastIndexOf(mti, "/") + 1);
-                return {
-                    ...row,
-                    status: "unapproved",
-                    mapping_type: "exact",
-                    id: id,
-                };
-            }),
-            "source_term"
-        );
-        const selected = _.mapValues(grouped, (group) =>
-            _.map(group, (row, i) =>
-                i === 0
-                    ? { ...row, selected: true }
-                    : { ...row, selected: false }
+        const grouped = _.toPairs(
+            _.groupBy(
+                _.map(props.data, (row, i) => {
+                    // extract the identifier from the URL
+                    const mti = new URL(row.mapped_term_identifier).pathname;
+                    const id = mti.slice(_.lastIndexOf(mti, "/") + 1);
+                    return {
+                        ...row,
+                        status: "unapproved",
+                        mapping_type: "exact",
+                        id: id,
+                    };
+                }),
+                "source_term"
             )
         );
+        const selected = _.fromPairs(
+            _.map(grouped, (group, g) => [
+                group[0],
+                _.map(group[1], (row, i) => ({
+                    ...row,
+                    selected: i === 0,
+                    number: g + 1,
+                })),
+            ])
+        );
+
         return selected;
     }
 
-    const [data, setData] = useState(initialData());
+    const [data, setData] = useState(initializeData());
+    const [pageNumber, setPageNumber] = useState(1);
     // get source terms in order they appeared in original output
     const sourceTerms = _.uniq(_.map(props.data, "source_term"));
 
+    let currentSourceTerms = _.slice(
+        sourceTerms,
+        (pageNumber - 1) * 10,
+        pageNumber * 10
+    );
+
     function changeField(source_term, index, field, value) {
         // for the index'ed row of source_term, change the value of field
+        console.log(source_term, index, field, value);
         setData({
             ...data,
             [source_term]: _.map(data[source_term], (row, i) =>
@@ -100,6 +116,14 @@ export default function Results(props) {
         );
     }, [data]);
 
+    const pageBar = (
+        <PageBar
+            pageNumber={pageNumber}
+            setPageNumber={setPageNumber}
+            maxPages={_.ceil(sourceTerms.length / 10)}
+        />
+    );
+
     return (
         <div>
             <p>
@@ -122,6 +146,7 @@ export default function Results(props) {
             >
                 Download
             </CSVLink>
+            {pageBar}
             <table className="table">
                 <thead className="table-light">
                     <tr>
@@ -129,7 +154,12 @@ export default function Results(props) {
                             <th
                                 className={
                                     _.indexOf(
-                                        ["Source Term", "Mapped Term", "Score"],
+                                        [
+                                            "#",
+                                            "Source Term",
+                                            "Mapped Term",
+                                            "Score",
+                                        ],
                                         c
                                     ) !== -1
                                         ? "fixed-th"
@@ -143,7 +173,7 @@ export default function Results(props) {
                     </tr>
                 </thead>
                 <tbody>
-                    {sourceTerms.map((term, i) => (
+                    {currentSourceTerms.map((term, i) => (
                         <TermRows
                             key={term}
                             rows={data[term]}
@@ -155,6 +185,7 @@ export default function Results(props) {
                     ))}
                 </tbody>
             </table>
+            {pageBar}
         </div>
     );
 }

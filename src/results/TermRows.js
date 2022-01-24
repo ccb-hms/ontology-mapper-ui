@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, Fragment } from "react";
 import { default as _ } from "lodash";
 import OntologyCell from "./cells/OntologyCell";
 import MappingTypeCell from "./cells/MappingTypeCell";
@@ -27,8 +27,11 @@ function TermRows(props) {
     return [...selected, ...alts].map(
         (row, index) =>
             (editedCell === EditedCell.ViewAltMappings || row.selected) && (
-                <>
-                    <tr key={row.id} className={!row.selected ? "alt-row" : ""}>
+                <Fragment key={index}>
+                    <tr className={!row.selected ? "alt-row" : ""}>
+                        <td className="fixed-td" key="number">
+                            {row.number}
+                        </td>
                         <td className="fixed-td" key="source_term">
                             {row.source_term}
                         </td>
@@ -95,7 +98,7 @@ function TermRows(props) {
                             ></td>
                         </tr>
                     )}
-                </>
+                </Fragment>
             )
     );
 }

@@ -6,7 +6,7 @@ export default function DropdownCell(props) {
             {props.edited ? (
                 <div>
                     <select
-                        class="custom-select"
+                        className="custom-select"
                         name="mapping-type"
                         value={props.value}
                         onChange={(e) => props.changeField(e.target.value)}
