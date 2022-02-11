@@ -1,9 +1,52 @@
 import { Network } from "vis-network";
-import { DataSet } from "vis-data";
 import { useRef, useEffect } from "react";
+import { default as _ } from "lodash";
 
 const staticOptions = {
-    layout: { hierarchical: { enabled: true, direction: "LR" } },
+    nodes: {
+        borderWidth: 0.5,
+        borderWidthSelected: 1,
+        color: {
+            background: "#f8f9fa",
+            border: "#000",
+            highlight: {
+                background: "#e2e2e2",
+                border: "#000",
+            },
+        },
+        font: {
+            size: 10,
+        },
+        shape: "box",
+        widthConstraint: 40,
+    },
+    edges: {
+        arrows: {
+            to: {
+                enabled: true,
+                scaleFactor: 1,
+                type: "arrow",
+            },
+        },
+        font: {
+            size: 10,
+            vadjust: -15,
+        },
+        chosen: false,
+        color: "#555",
+    },
+    autoResize: false,
+    layout: {
+        randomSeed: 0,
+        hierarchical: {
+            enabled: true,
+            direction: "LR",
+            sortMethod: "directed",
+            shakeTowards: "leaves",
+            levelSeparation: 120,
+            nodeSpacing: 80,
+        },
+    },
     physics: { enabled: false },
     interaction: {
         dragNodes: false,
@@ -15,42 +58,64 @@ const staticOptions = {
 };
 
 const dynamicOptions = {
-    layout: { hierarchical: { enabled: true, direction: "LR" } },
+    autoResize: false,
+    nodes: {
+        borderWidth: 0.5,
+        borderWidthSelected: 1,
+        color: {
+            background: "#f8f9fa",
+            border: "#000",
+            highlight: {
+                background: "#e2e2e2",
+                border: "#000",
+            },
+        },
+        widthConstraint: 75,
+        shape: "box",
+    },
+    edges: {
+        arrows: {
+            to: {
+                enabled: true,
+                scaleFactor: 1,
+                type: "arrow",
+            },
+        },
+        font: {
+            size: 10,
+            vadjust: -15,
+        },
+        chosen: false,
+        color: "#555",
+        widthConstraint: 50,
+    },
+    layout: {
+        hierarchical: {
+            enabled: true,
+            direction: "LR",
+            sortMethod: "directed",
+            shakeTowards: "leaves",
+        },
+    },
     physics: { enabled: false },
     interaction: {
         dragNodes: false,
         zoomView: true,
         dragView: true,
         selectable: true,
+        zoomSpeed: 0.3,
     },
     width: "100%",
     height: "500px",
 };
-
-const nodes = new DataSet([
-    { id: 1, label: "Node 1" },
-    { id: 2, label: "Node 2" },
-    { id: 3, label: "Node 3" },
-    { id: 4, label: "Node 4" },
-    { id: 5, label: "Node 5" },
-]);
-
-// create an array with edges
-const edges = new DataSet([
-    { from: 1, to: 3 },
-    { from: 1, to: 2 },
-    { from: 2, to: 4 },
-    { from: 2, to: 5 },
-    { from: 3, to: 3 },
-]);
 
 export default function OntologyCell(props) {
     const cellRef = useRef();
     let network = useRef();
     useEffect(() => {
         const data = {
-            nodes: nodes,
-            edges: edges,
+            nodes: props.graph.nodes,
+            edges: props.graph.edges,
         };
         if (network.current) {
             network.current.destroy();
@@ -64,7 +129,29 @@ export default function OntologyCell(props) {
         } else {
             network.current = new Network(cellRef.current, data, staticOptions);
         }
-    }, [props.edited, props.reference]);
+        network.current.selectNodes([props.id]);
+        network.current.addEventListener("selectNode", (e) => {
+            if (e.nodes.length === 1) {
+                const nodeId = e.nodes[0];
+                const node = _.find(props.graph.nodes, { id: nodeId });
+                const mti = new URL(nodeId).pathname;
+                const id = mti.slice(_.lastIndexOf(mti, "/") + 1);
+                const newTerm = {
+                    graph: props.graph,
+                    id: id,
+                    mapped_ontology_iri: "http://www.ebi.ac.uk/efo/efo.owl#",
+                    mapped_term_iri: nodeId,
+                    mapped_term_label: node.label,
+                    mapping_score: -1,
+                    mapping_type: "exact",
+                    selected: true,
+                    status: "unapproved",
+                };
+                props.addNewTerm(newTerm);
+                props.resetEditedCell(e);
+            }
+        });
+    }, [props]);
 
     const onClick = !props.edited ? props.setEdit : props.resetEditedCell;
     return (

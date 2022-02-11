@@ -17,8 +17,12 @@ function TermRows(props) {
     const [editedCell, setEditedCell] = useState(EditedCell.None);
     const ontologyRef = useRef(null);
     function resetEditedCell(e) {
-        e.stopPropagation();
-        setEditedCell(EditedCell.None);
+        try {
+            e.stopPropagation();
+        } catch (e) {
+        } finally {
+            setEditedCell(EditedCell.None);
+        }
     }
 
     const selected = _.filter(props.rows, "selected");
@@ -36,13 +40,13 @@ function TermRows(props) {
                             {row.source_term}
                         </td>
                         <td className="fixed-td" key="mapped_term_label">
-                            <a href={row.mapped_term_identifier}>
+                            <a href={row.mapped_term_iri}>
                                 <p>{row.mapped_term_label}</p>
                                 <p>{`[${row.id}]`}</p>
                             </a>
                         </td>
                         <td key="score" className="fixed-td">
-                            {parseFloat(row.score).toFixed(3)}
+                            {parseFloat(row.mapping_score).toFixed(3)}
                         </td>
                         <OntologyCell
                             edited={editedCell === EditedCell.Ontology}
@@ -50,6 +54,9 @@ function TermRows(props) {
                             resetEditedCell={resetEditedCell}
                             reference={ontologyRef}
                             selected={row.selected}
+                            graph={row.graph}
+                            id={row.mapped_term_iri}
+                            addNewTerm={(v) => props.addNewTerm(v)}
                         />
                         <MappingTypeCell
                             selected={row.selected}

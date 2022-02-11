@@ -4,8 +4,14 @@ import Papa from "papaparse";
 import { default as _ } from "lodash";
 
 async function getData() {
-    const response = await fetch("full.csv");
-    const result = await response.body.getReader().read();
+    const [csvResponse, jsonResponse] = await Promise.all([
+        fetch("full.csv"),
+        fetch("full-graphs.json"),
+    ]);
+    const [result, json] = await Promise.all([
+        csvResponse.body.getReader().read(),
+        jsonResponse.json(),
+    ]);
 
     const decoder = new TextDecoder("utf-8");
     const csv = decoder.decode(result.value);
@@ -23,8 +29,14 @@ async function getData() {
             return;
         },
     });
+
+    // combine
+    const combinedData = _.map(_.zip(data, json), ([d, j]) => ({
+        ...d,
+        graph: j,
+    }));
     const maxCount = _.max(_.values(_.countBy(data, "source_term")));
-    return { data: data, maxCount: maxCount };
+    return { data: combinedData, maxCount: maxCount };
 }
 
 export default function AsyncResults() {

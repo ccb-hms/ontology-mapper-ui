@@ -24,8 +24,8 @@ const csv_headers = _.map(
         "",
         "Source Term",
         "Mapped Term Label",
-        "Mapped Term Identifier",
-        "Score",
+        "Mapped Term IRI",
+        "Mapping Score",
         "Mapping Type",
         "Status",
     ],
@@ -39,7 +39,7 @@ export default function Results(props) {
             _.groupBy(
                 _.map(props.data, (row, i) => {
                     // extract the identifier from the URL
-                    const mti = new URL(row.mapped_term_identifier).pathname;
+                    const mti = new URL(row.mapped_term_iri).pathname;
                     const id = mti.slice(_.lastIndexOf(mti, "/") + 1);
                     return {
                         ...row,
@@ -82,6 +82,28 @@ export default function Results(props) {
                 _.map(data[source_term_index], (row, i) =>
                     i === term_row_index ? { ...row, [field]: value } : row
                 ),
+            ],
+            data.slice(source_term_index + 1)
+        );
+        setData(newData);
+    }
+
+    function addNewTerm(source_term_index, source_term, new_term) {
+        const newTerm = {
+            ...new_term,
+            source_term: source_term,
+            number: source_term_index + 1,
+        };
+        let newData = _.concat(
+            data.slice(0, source_term_index),
+            [
+                [
+                    ..._.map(data[source_term_index], (row, i) => ({
+                        ...row,
+                        selected: false,
+                    })),
+                    newTerm,
+                ],
             ],
             data.slice(source_term_index + 1)
         );
@@ -183,6 +205,9 @@ export default function Results(props) {
                             rows={data[t.index]}
                             changeField={(i, field, value) =>
                                 changeField(t.index, i, field, value)
+                            }
+                            addNewTerm={(new_term) =>
+                                addNewTerm(t.index, t.term, new_term)
                             }
                             setSelected={(i) => setSelected(t.index, i)}
                         />
