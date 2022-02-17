@@ -32,6 +32,8 @@ const csv_headers = _.map(
     (t) => ({ label: t, key: _.snakeCase(t) })
 );
 
+const TERMS_PER_PAGE = 2;
+
 export default function Results(props) {
     function initializeData() {
         // set up data to be grouped by source term and have additional fields
@@ -70,8 +72,8 @@ export default function Results(props) {
     // get source terms in order they appeared in original output
     let currentSourceTerms = _.slice(
         sourceTerms,
-        (pageNumber - 1) * 10,
-        pageNumber * 10
+        (pageNumber - 1) * TERMS_PER_PAGE,
+        pageNumber * TERMS_PER_PAGE
     );
 
     function changeField(source_term_index, term_row_index, field, value) {

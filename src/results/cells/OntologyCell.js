@@ -1,4 +1,5 @@
 import { Network } from "vis-network";
+import { DataSet } from "vis-data";
 import { useRef, useEffect } from "react";
 import { default as _ } from "lodash";
 
@@ -61,11 +62,15 @@ const dynamicOptions = {
     autoResize: false,
     nodes: {
         borderWidth: 0.5,
-        borderWidthSelected: 1,
+        borderWidthSelected: 1.5,
         color: {
             background: "#f8f9fa",
             border: "#000",
             highlight: {
+                background: "#e2e2e2",
+                border: "#000",
+            },
+            hover: {
                 background: "#e2e2e2",
                 border: "#000",
             },
@@ -104,6 +109,7 @@ const dynamicOptions = {
         dragView: true,
         selectable: true,
         zoomSpeed: 0.3,
+        hover: true,
     },
     width: "100%",
     height: "500px",
