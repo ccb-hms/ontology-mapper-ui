@@ -33,8 +33,8 @@ function TermRows(props) {
             (editedCell === EditedCell.ViewAltMappings || row.selected) && (
                 <Fragment key={index}>
                     <tr className={!row.selected ? "alt-row" : ""}>
-                        <td className="fixed-td" key="number">
-                            {row.number}
+                        <td className="fixed-td" key="term_number">
+                            {row.term_number}
                         </td>
                         <td className="fixed-td" key="source_term">
                             {row.source_term}
@@ -66,7 +66,11 @@ function TermRows(props) {
                                 setEditedCell(EditedCell.MappingType)
                             }
                             changeField={(v) =>
-                                props.changeField(index, "mapping_type", v)
+                                props.changeField(
+                                    row.term_alt_number,
+                                    "mapping_type",
+                                    v
+                                )
                             }
                             resetEditedCell={resetEditedCell}
                         />
@@ -79,7 +83,7 @@ function TermRows(props) {
                                     : setEditedCell(EditedCell.ViewAltMappings)
                             }
                             setSelected={(e) => {
-                                props.setSelected(index);
+                                props.setSelected(row.term_alt_number);
                                 resetEditedCell(e);
                             }}
                         />
@@ -91,7 +95,11 @@ function TermRows(props) {
                                 setEditedCell(EditedCell.ApproveReject)
                             }
                             changeField={(v) =>
-                                props.changeField(index, "status", v)
+                                props.changeField(
+                                    row.term_alt_number,
+                                    "status",
+                                    v
+                                )
                             }
                             resetEditedCell={resetEditedCell}
                         />

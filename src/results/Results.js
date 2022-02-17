@@ -57,7 +57,8 @@ export default function Results(props) {
             _.map(group[1], (row, i) => ({
                 ...row,
                 selected: i === 0,
-                number: g + 1,
+                term_number: g + 1,
+                term_alt_number: i,
             }))
         );
         const sourceTerms = _.map(grouped, (group, g) => ({
@@ -95,6 +96,7 @@ export default function Results(props) {
             ...new_term,
             source_term: source_term,
             number: source_term_index + 1,
+            term_alt_number: data[source_term_index].length,
         };
         let newData = _.concat(
             data.slice(0, source_term_index),
@@ -201,7 +203,7 @@ export default function Results(props) {
                     </tr>
                 </thead>
                 <tbody>
-                    {currentSourceTerms.map((t, i) => (
+                    {currentSourceTerms.map((t) => (
                         <TermRows
                             key={t.term}
                             rows={data[t.index]}
