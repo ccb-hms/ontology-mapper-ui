@@ -32,7 +32,7 @@ const csv_headers = _.map(
     (t) => ({ label: t, key: _.snakeCase(t) })
 );
 
-const TERMS_PER_PAGE = 2;
+const TERMS_PER_PAGE = 10;
 
 export default function Results(props) {
     function initializeData() {
@@ -98,17 +98,35 @@ export default function Results(props) {
             number: source_term_index + 1,
             term_alt_number: data[source_term_index].length,
         };
+
+        let source_term_array = data[source_term_index];
+
+        if (
+            _.findIndex(source_term_array, [
+                "mapped_term_iri",
+                new_term.mapped_term_iri,
+            ]) !== -1
+        ) {
+            // if term already exists as option
+            // don't add term already in list, just select that term
+            source_term_array = _.map(source_term_array, (row, i) => ({
+                ...row,
+                selected: row.mapped_term_iri === new_term.mapped_term_iri,
+            }));
+        } else {
+            // add new term and unselect all other terms
+            source_term_array = [
+                ..._.map(source_term_array, (row, i) => ({
+                    ...row,
+                    selected: false,
+                })),
+                newTerm,
+            ];
+        }
+
         let newData = _.concat(
             data.slice(0, source_term_index),
-            [
-                [
-                    ..._.map(data[source_term_index], (row, i) => ({
-                        ...row,
-                        selected: false,
-                    })),
-                    newTerm,
-                ],
-            ],
+            [source_term_array],
             data.slice(source_term_index + 1)
         );
         setData(newData);

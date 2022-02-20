@@ -46,7 +46,9 @@ function TermRows(props) {
                             </a>
                         </td>
                         <td key="score" className="fixed-td">
-                            {parseFloat(row.mapping_score).toFixed(3)}
+                            {row.mapping_score !== -1
+                                ? parseFloat(row.mapping_score).toFixed(3)
+                                : "-"}
                         </td>
                         <OntologyCell
                             edited={editedCell === EditedCell.Ontology}
@@ -76,6 +78,7 @@ function TermRows(props) {
                         />
                         <ViewAltMappingsCell
                             selected={row.selected}
+                            disabled={alts.length === 0}
                             edited={editedCell === EditedCell.ViewAltMappings}
                             toggleView={() =>
                                 editedCell === EditedCell.ViewAltMappings

@@ -1,5 +1,5 @@
 import { Network } from "vis-network";
-import { DataSet } from "vis-data";
+// import { DataSet } from "vis-data";
 import { useRef, useEffect } from "react";
 import { default as _ } from "lodash";
 
@@ -115,6 +115,19 @@ const dynamicOptions = {
     height: "500px",
 };
 
+const clusterOptions = {
+    clusterNodeProperties: {
+        borderWidth: 1,
+        font: {
+            // use html parser
+            multi: "html",
+        },
+        widthConstraint: 100,
+        label: "<i>Click to Expand</i>",
+        shape: "circle",
+    },
+};
+
 export default function OntologyCell(props) {
     const cellRef = useRef();
     let network = useRef();
@@ -123,21 +136,48 @@ export default function OntologyCell(props) {
             nodes: props.graph.nodes,
             edges: props.graph.edges,
         };
+
+        // find all nodes that connect to the main term
+        let children = _.map(
+            _.filter(props.graph.edges, ["to", props.id]),
+            "from"
+        );
+
         if (network.current) {
+            // remove any existing network
             network.current.destroy();
         }
         if (props.edited) {
+            // create in reference to big cell
             network.current = new Network(
                 props.reference.current,
                 data,
                 dynamicOptions
             );
         } else {
+            // create in the inline cell
             network.current = new Network(cellRef.current, data, staticOptions);
         }
+        // cluster if more than 10 children
+        if (children.length > 10) {
+            network.current.cluster({
+                joinCondition: (nodeOptions) =>
+                    children.includes(nodeOptions.id),
+                ...clusterOptions,
+            });
+            // resize canvas for the cluster
+            network.current.fit();
+        }
+        // select the current term node
         network.current.selectNodes([props.id]);
+        // click handler for actually switching the node value
+
         network.current.addEventListener("selectNode", (e) => {
-            if (e.nodes.length === 1) {
+            if (
+                e.nodes.length === 1 &&
+                !network.current.isCluster(e.nodes[0])
+            ) {
+                // add new term and select it
                 const nodeId = e.nodes[0];
                 const node = _.find(props.graph.nodes, { id: nodeId });
                 const mti = new URL(nodeId).pathname;
@@ -155,6 +195,9 @@ export default function OntologyCell(props) {
                 };
                 props.addNewTerm(newTerm);
                 props.resetEditedCell(e);
+            } else if (network.current.isCluster(e.nodes[0])) {
+                // expand cluster
+                network.current.openCluster(e.nodes[0]);
             }
         });
     }, [props]);
