@@ -40,9 +40,20 @@ export default function Results(props) {
         const grouped = _.toPairs(
             _.groupBy(
                 _.map(props.data, (row, i) => {
+                    let id;
+                    try {
+                        id = row.mapped_term_iri.slice(
+                            _.lastIndexOf(row.mapped_term_iri, "/") + 1
+                        );
+                    } catch (e) {
+                        console.log(row);
+                    } finally {
+                    }
                     // extract the identifier from the URL
-                    const mti = new URL(row.mapped_term_iri).pathname;
-                    const id = mti.slice(_.lastIndexOf(mti, "/") + 1);
+                    // const mti = new URL(row.mapped_term_iri).pathname;
+                    // const id = row.mapped_term_iri.slice(
+                    //     _.lastIndexOf(row.mapped_term_iri, "/") + 1
+                    // );
                     return {
                         ...row,
                         status: "unapproved",

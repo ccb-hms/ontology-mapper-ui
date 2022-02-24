@@ -3,6 +3,22 @@ import Results from "./Results";
 import Papa from "papaparse";
 import { default as _ } from "lodash";
 
+export async function parseCsv(file) {
+    return new Promise((resolve, reject) => {
+        Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            transformHeader: (header) => _.snakeCase(header),
+            complete: (results) => {
+                return resolve(results);
+            },
+            error: (error) => {
+                return reject(error);
+            },
+        });
+    });
+}
+
 async function getData() {
     const [csvResponse, jsonResponse] = await Promise.all([
         fetch("full.csv"),
@@ -15,26 +31,15 @@ async function getData() {
 
     const decoder = new TextDecoder("utf-8");
     const csv = decoder.decode(result.value);
-    let data = [];
-    // https://stackoverflow.com/a/61420376
-    await Papa.parse(csv, {
-        header: true,
-        skipEmptyLines: true,
-        transformHeader: (header) => _.snakeCase(header),
-        step: function (result) {
-            data.push(result.data);
-        },
-        complete: function (results, file) {
-            // figure out how many returned per row
-            return;
-        },
-    });
+
+    const data = (await parseCsv(csv)).data;
 
     // combine
     const combinedData = _.map(_.zip(data, json), ([d, j]) => ({
         ...d,
         graph: j,
     }));
+
     const maxCount = _.max(_.values(_.countBy(data, "source_term")));
     return { data: combinedData, maxCount: maxCount };
 }

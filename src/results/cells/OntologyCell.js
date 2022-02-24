@@ -180,8 +180,8 @@ export default function OntologyCell(props) {
                 // add new term and select it
                 const nodeId = e.nodes[0];
                 const node = _.find(props.graph.nodes, { id: nodeId });
-                const mti = new URL(nodeId).pathname;
-                const id = mti.slice(_.lastIndexOf(mti, "/") + 1);
+                // const mti = new URL(nodeId).pathname;
+                const id = nodeId.slice(_.lastIndexOf(nodeId, "/") + 1);
                 const newTerm = {
                     graph: props.graph,
                     id: id,
