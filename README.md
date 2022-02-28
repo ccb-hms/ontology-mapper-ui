@@ -6,7 +6,16 @@
 
 ### Running Locally
 
-When first cloned, run the command `git submodule init` to initialize the contained [ontology-mapper](https://github.com/ccb-hms/ontology-mapper) repository. Then, after initialization or whenever the ontology-mapper repository is updated, run the command `git submodule update` to update the local version.
+When first cloned, run the command:
+```
+git submodule init
+```
+to initialize the contained [`ontology-mapper`](https://github.com/ccb-hms/ontology-mapper) repository.
+Then, after initialization or whenever the [`ontology-mapper`](https://github.com/ccb-hms/ontology-mapper) repository is updated, run the command 
+```
+git submodule update
+```
+to update the local version of that submodule.
 
 Before running, make sure you have the latest version of the repository built by running the command `docker-compose build`. Docker should build two images:
 
