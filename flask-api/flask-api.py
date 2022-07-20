@@ -27,7 +27,7 @@ def run_mapper():
 
     if "unstructured_terms_text" in request.form:
         # text is list of terms, write to file
-        with open(source) as f:
+        with open(source, 'a+') as f:
             f.write(request.form["unstructured_terms_text"])
     else:
         # text in file, save it
