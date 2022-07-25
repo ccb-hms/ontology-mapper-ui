@@ -5,10 +5,9 @@ export default function Layout(props) {
         <div className="App">
             <div className="Header">
                 <div>
-                    <h1>text2term Ontology Mapper</h1>
+                    <h1>text2term ontology mapper</h1>
                     <h6>
-                        A tool for mapping (uncontrolled) terms to ontology
-                        terms to facilitate semantic integration.
+                        A tool for mapping free-text term descriptions to terms from an arbitrary ontology.
                     </h6>
                 </div>
                 <NavBar currentPath={props.currentPath} />
