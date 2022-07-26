@@ -66,13 +66,11 @@ def run_mapper():
         request.form["min_score"],
         "-iris",
         request.form["base_iris"],
+        "-g"
     ]
 
     if request.form["incl_deprecated"] == "false":
         command += ["-d"]
-
-    if request.form["incl_individuals"] == "true":
-        command += ["-i"]
 
     dbFile = OUTPUT_FOLDER + f"{processId}.txt"
 

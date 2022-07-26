@@ -14,7 +14,6 @@ function MapperForm() {
     const [minScore, setMinScore] = useState(0.5);
     const [baseIRI, setBaseIRI] = useState("");
     const [inclDeprecated, setInclDeprecated] = useState(true);
-    const [inclIndividuals, setInclIndividuals] = useState(false);
 
     const [unstructuredTerms, setUnstructuredTerms] = useState(undefined);
     const [ontology, setOntology] = useState(undefined);
@@ -125,21 +124,6 @@ function MapperForm() {
                 />
             ),
         },
-
-        {
-            name: "incl_individuals",
-            label: "Include Ontology Individuals",
-            tip: "Include ontology individuals in addition to classes.",
-            field: (
-                <input
-                    className="form-check-input"
-                    type="checkbox"
-                    name="incl_individuals"
-                    checked={inclIndividuals}
-                    onChange={(e) => setInclIndividuals(!inclIndividuals)}
-                />
-            ),
-        },
     ];
 
     function handleSubmit(e) {
@@ -166,7 +150,6 @@ function MapperForm() {
         formData.append("min_score", minScore);
         formData.append("base_iris", baseIRI);
         formData.append("incl_deprecated", inclDeprecated);
-        formData.append("incl_individuals", inclIndividuals);
 
         const config = {
             headers: {
