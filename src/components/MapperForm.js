@@ -14,6 +14,7 @@ function MapperForm() {
     const [minScore, setMinScore] = useState(0.5);
     const [baseIRI, setBaseIRI] = useState("");
     const [inclDeprecated, setInclDeprecated] = useState(true);
+    const [mapOption, setMapOption] = useState("tfidf");
 
     const [unstructuredTerms, setUnstructuredTerms] = useState(undefined);
     const [ontology, setOntology] = useState(undefined);
@@ -124,6 +125,29 @@ function MapperForm() {
                 />
             ),
         },
+        {
+            name: "mapper",
+            label: "Mapper Options",
+            tip: 
+                "Method used to compare source terms with ontology terms.",
+            field: (
+                <select
+                    type="text"
+                    name="mapper"
+                    onChange={(e) => setMapOption(e.target.value)}
+                    value={mapOption}
+                >
+                <option value="levenshtein">Levenshtein</option>
+                <option value="jaro">Jaro</option>
+                <option value="jarowinkler">Jaro-Winkler</option>
+                <option value="jaccard">Jaccard</option>
+                <option value="fuzzy">Fuzzy</option>
+                <option value="tfidf">tf-idf</option>
+                <option value="zooma">Zooma</option>
+                <option value="bioportal">Bioportal</option>
+                </select>
+            ),
+        },
     ];
 
     function handleSubmit(e) {
@@ -150,6 +174,7 @@ function MapperForm() {
         formData.append("min_score", minScore);
         formData.append("base_iris", baseIRI);
         formData.append("incl_deprecated", inclDeprecated);
+        formData.append("mapper", mapOption);
 
         const config = {
             headers: {
@@ -206,7 +231,7 @@ function MapperForm() {
                             className="bold btn btn-secondary"
                             onClick={() => setExpanded(false)}
                         >
-                            ▲ Show Less Options ▲
+                            ▲ Show Fewer Options ▲
                         </div>
                     )}
                 </div>

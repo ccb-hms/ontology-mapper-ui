@@ -52,20 +52,14 @@ def run_mapper():
         mapper_path = "ontology-mapper/text2term"
 
     command = [
-        "python",
-        mapper_path,
-        "-s",
-        source,
-        "-t",
-        target,
-        "-o",
-        output,
-        "-top",
-        request.form["top_mappings"],
-        "-min",
-        request.form["min_score"],
-        "-iris",
-        request.form["base_iris"],
+        "python", mapper_path,
+        "-s", source,
+        "-t", target,
+        "-o", output,
+        "-m", request.form["mapper"],
+        "-top", request.form["top_mappings"],
+        "-min", request.form["min_score"],
+        "-iris", request.form["base_iris"],
         "-g"
     ]
 
