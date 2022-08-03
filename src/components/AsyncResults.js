@@ -4,6 +4,7 @@ import Papa from "papaparse";
 import Layout from "./Layout";
 import { default as _ } from "lodash";
 import { useLocation } from "react-router-dom";
+import getUrlBase from "./UrlBase.js";
 
 export async function parseCsv(file) {
     return new Promise((resolve, reject) => {
@@ -23,10 +24,7 @@ export async function parseCsv(file) {
 
 async function getData(processId) {
     // varies based on local versus Docker
-    const URL_BASE =
-        process.env.REACT_APP_DOCKER === "true"
-            ? "http://localhost:3000"
-            : "http://127.0.0.1:5000";
+    const URL_BASE = getUrlBase();
     const csvURL = new URL(URL_BASE + "/api/download_csv");
     const jsonURL = new URL(URL_BASE + "/api/download_graph_json");
     csvURL.searchParams.append("processId", processId);

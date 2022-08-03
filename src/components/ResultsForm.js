@@ -3,6 +3,7 @@ import "./Form.css";
 import { Dropzone, FileItem } from "@dropzone-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import getUrlBase from "./UrlBase.js";
 
 function ResultsForm() {
     const navigate = useNavigate();
@@ -10,8 +11,7 @@ function ResultsForm() {
     const [termGraphsJson, setTermGraphsJson] = useState([]);
 
     // api information
-    const URL_BASE =
-        process.env.REACT_APP_DOCKER === "true" ? "" : "http://127.0.0.1:5000";
+    const URL_BASE = getUrlBase();
     const url_submit = URL_BASE + "/api/old_results";
 
     function handleSubmit(e) {

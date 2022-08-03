@@ -5,6 +5,7 @@ import FileTextUpload from "./FileTextUpload";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { default as _ } from "lodash";
+import getUrlBase from "./UrlBase.js";
 
 function MapperForm() {
     const navigate = useNavigate();
@@ -24,8 +25,7 @@ function MapperForm() {
     const [processId, setProcessId] = useState(undefined);
 
     // api information
-    const URL_BASE =
-        process.env.REACT_APP_DOCKER === "true" ? "" : "http://127.0.0.1:5000";
+    const URL_BASE = getUrlBase();
     const url_mapper = URL_BASE + "/api/run_mapper";
     const url_status = URL_BASE + "/api/current_status";
 
