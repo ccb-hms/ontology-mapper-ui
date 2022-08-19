@@ -4,6 +4,7 @@ from threading import Thread
 import json
 import uuid
 import os
+import logging
 
 app = Flask(__name__)
 
@@ -128,7 +129,6 @@ def download_csv():
 @app.route("/api/download_graph_json", methods=["GET"])
 def download_graph_json():
     processId = request.args["processId"]
-
     resp = send_from_directory(OUTPUT_FOLDER, f"{processId}.csv-term-graphs.json")
     resp.headers["Content-Type"] = "application/json"
     resp.headers["Access-Control-Allow-Origin"] = "*"
@@ -136,4 +136,4 @@ def download_graph_json():
 
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(port=8601)

@@ -4,10 +4,14 @@ services:
       context: .
       dockerfile: Dockerfile.api
     image: ontology-mapper-api
+    environment:
+      - BASEURL=${DOMAIN}
   client:
     build:
       context: .
       dockerfile: Dockerfile.client
     image: ontology-mapper-client
+    environment:
+      - BASEURL=${DOMAIN}
     ports:
-      - "3000:80"
+      - "8602:80"
