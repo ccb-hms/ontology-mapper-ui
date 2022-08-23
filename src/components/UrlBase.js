@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 function getUrlBase() {
 	const dev_url = "localhost";
 	const prod_url = "app-gena-prod0-rc.hms.harvard.edu";
-	console.log(process.env);
 
 	var url_base = "http://";
 	if (false) {
