@@ -3,8 +3,8 @@ import "./NavBar.css";
 
 function NavBar({ currentPath }) {
     const paths = [
-        { path: "/", name: "Run Mapper" },
-        { path: "/upload-results", name: "Upload Old Results" },
+        { path: "/", name: "Home" },
+        { path: "/upload-results", name: "Resume Mapping" },
     ];
     return (
         <div className="nav-bar">

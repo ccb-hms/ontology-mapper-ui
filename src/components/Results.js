@@ -215,7 +215,7 @@ export default function Results(props) {
                 headers={[...csv_headers]}
                 filename={"mapping-output.csv"}
             >
-                Download CSV
+                Download Mappings
             </CSVLink>
             <TermGraphsDownload termGraphs={props.graphs} />
             {pageBar}

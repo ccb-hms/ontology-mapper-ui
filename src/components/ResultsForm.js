@@ -48,7 +48,7 @@ function ResultsForm() {
                             accept={".csv"}
                             behavior="replace"
                             label={
-                                "Drag .csv file of old results here or click to browse computer."
+                                "Drag .csv file of mapping results here or click to browse computer."
                             }
                             maxFiles={1}
                             minHeight={0}

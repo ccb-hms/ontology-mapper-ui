@@ -7,7 +7,7 @@ export default function Layout(props) {
                 <div>
                     <h1>text2term ontology mapper</h1>
                     <h6>
-                        A tool for mapping free-text term descriptions to terms from an arbitrary ontology.
+                        A tool for mapping free-text descriptions of (biomedical) entities to controlled terms in an ontology.
                     </h6>
                 </div>
                 <NavBar currentPath={props.currentPath} />

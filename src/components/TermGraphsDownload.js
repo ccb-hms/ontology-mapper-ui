@@ -29,7 +29,7 @@ export default function TermGraphsDownload({ termGraphs }) {
 
     return (
         <button className="btn btn-secondary" onClick={exportToJson}>
-            Download Term Graphs JSON
+            Download Term Graphs
         </button>
     );
 }

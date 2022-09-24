@@ -70,7 +70,7 @@ def run_mapper():
     dbFile = OUTPUT_FOLDER + f"{processId}.txt"
 
     with open(dbFile, "w") as f:
-        f.write("Getting Mapper Ready ...\n")
+        f.write("Initializing mapper...\n")
 
     def run_mapper(dbFile):
         with Popen(command, stdout=PIPE, bufsize=1, universal_newlines=True) as p:

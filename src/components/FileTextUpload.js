@@ -32,7 +32,7 @@ function FileTextUpload({ ontology, setOutput }) {
             style={{ gridColumn: ontology ? 3 : 1 }}
         >
             <h3 className="center-text">
-                {ontology ? "Ontology" : "Unstructured Terms"}
+                {ontology ? "Target Ontology" : "Source Terms"}
             </h3>
             <div
                 className="ft-upload"
@@ -64,7 +64,7 @@ function FileTextUpload({ ontology, setOutput }) {
                     <div className="arg-field textarea">
                         <div className="label">
                             <label htmlFor={name + "text-field"}>
-                                {ontology ? "Ontology URL" : "Enter Terms:"}
+                                {ontology ? "Ontology URL:" : "Enter Terms:"}
                             </label>
                         </div>
 
@@ -73,6 +73,7 @@ function FileTextUpload({ ontology, setOutput }) {
                                 style={{ width: "100%" }}
                                 type="url"
                                 name={name + "text-field"}
+                                placeholder="(ontology acronyms when mapping with BioPortal/Zooma)"
                                 value={textField}
                                 onChange={(e) => setTextField(e.target.value)}
                             ></input>

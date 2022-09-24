@@ -20,7 +20,7 @@ function MapperForm() {
     const [unstructuredTerms, setUnstructuredTerms] = useState(undefined);
     const [ontology, setOntology] = useState(undefined);
     const [currentStatus, setCurrentStatus] = useState(
-        "Getting Mapper Ready ..."
+        "Initializing mapper..."
     );
     const [processId, setProcessId] = useState(undefined);
 
