@@ -14,7 +14,7 @@ function MapperForm() {
     const [topMappings, setTopMappings] = useState(3);
     const [minScore, setMinScore] = useState(0.5);
     const [baseIRI, setBaseIRI] = useState("");
-    const [inclDeprecated, setInclDeprecated] = useState(true);
+    const [inclDeprecated, setInclDeprecated] = useState(false);
     const [mapOption, setMapOption] = useState("tfidf");
 
     const [unstructuredTerms, setUnstructuredTerms] = useState(undefined);
