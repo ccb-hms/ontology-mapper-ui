@@ -11,7 +11,6 @@ app = Flask(__name__)
 OUTPUT_FOLDER = "output/"
 INPUT_FOLDER = "input/"
 
-
 @app.route("/api")
 def server_running():
     resp = Response("SERVER RUNNING")
@@ -136,4 +135,6 @@ def download_graph_json():
 
 
 if __name__ == "__main__":
-    app.run(port=8601)
+    prod_host = 'text2term.hms.harvard.edu'
+    dev_host = 'localhost'
+    app.run(port=8601, host=dev_host)
