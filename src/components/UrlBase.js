@@ -7,9 +7,10 @@ import { useNavigate } from "react-router-dom";
 function getUrlBase() {
 	const dev_url = "http://localhost";
 	const prod_url = "https://text2term.hms.harvard.edu";
+	const is_production = false; // In production, changes to true
 
 	var url_base = "";
-	if (false) {
+	if (is_production) {
 		url_base += prod_url;
 	} else {
 		url_base += dev_url;

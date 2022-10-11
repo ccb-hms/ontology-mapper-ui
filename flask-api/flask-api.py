@@ -135,6 +135,6 @@ def download_graph_json():
 
 
 if __name__ == "__main__":
-    prod_host = 'text2term.hms.harvard.edu'
-    dev_host = 'localhost'
-    app.run(port=8601, host=dev_host)
+    production_host = 'text2term.hms.harvard.edu'
+    development_host = 'localhost'
+    app.run(port=8601, host=development_host) # In production, variable changes
