@@ -7,7 +7,8 @@
 -   Node >= 16.0.0
 -   npm >= 8.0.0
 -   Python >= 3.9.0
--   pip >=21.0.0
+-   pip >= 21.0.0
+-   text2term >= 1.1.0
 
 **\*** These are the versions I have that work; while I know Python 3.9 or higher is necessary, the others may not strictly require the listed versions.
 
@@ -19,24 +20,6 @@
 
 When first cloned, run the command:
 
-```
-git submodule init
-```
-
-to initialize the contained [`ontology-mapper`](https://github.com/ccb-hms/ontology-mapper) repository.
-Then, after initialization run the command
-
-```
-git submodule update
-```
-
-to update to the specific version of the `ontology-mapper` repository pinned to the UI. If instead you want to update to the latest version of the`ontology-mapper` repository, run
-
-```
-git submodule update --remote flask-api/ontology-mapper
-```
-
-Then, run the command:
 
 ```
 npm install
@@ -47,17 +30,10 @@ to install all necessary packages for the React frontend.
 Next, go into the `flask-api` folder (perhaps by running `cd flask-api`) and run
 
 ```
-pip install -r requirements.txt
+pip install -r requirements-flask.txt
 ```
 
 to install necessary packages for the Flask api.
-Afterards, navigate into the `ontology-mapper` submodule (like by running `cd ontology-mapper`) and run
-
-```
-pip install .
-```
-
-to install the necessary packages for the mapper itself.
 
 ##### Running
 
@@ -85,22 +61,7 @@ to start the back-end, which can be interacted with at `localhost:5000`.
 
 ##### Initial Setup
 
-When first cloned, run the command:
-
-```
-git submodule init
-```
-
-to initialize the contained [`ontology-mapper`](https://github.com/ccb-hms/ontology-mapper) repository.
-Then, after initialization run the command
-
-```
-git submodule update
-```
-
-to update the local version of that submodule.
-
-Before running, make sure you have the latest version of the repository built by running the command"
+Before running, make sure you have the latest version of the repository built by running the command
 
 ```
 docker-compose build
@@ -121,7 +82,7 @@ docker-compose up
 
 Docker should build two containers corresponding to the two images.
 
-In a browser, navigate to `localhost:3000` to see the front-end.
+In a browser, navigate to `localhost:8602` to see the front-end.
 
 ### Acknowledgements
 

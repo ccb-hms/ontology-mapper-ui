@@ -1,23 +1,24 @@
 from flask import Flask, request, Response, send_file, send_from_directory
-from subprocess import Popen, PIPE
-from threading import Thread
 import json
 import uuid
 import os
 import logging
+import text2term
+import pandas
 
 app = Flask(__name__)
 
 OUTPUT_FOLDER = "output/"
 INPUT_FOLDER = "input/"
 
+# Routing for the main part of the application
 @app.route("/api")
 def server_running():
     resp = Response("SERVER RUNNING")
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 
-
+# Routing for the actual mapping, used most of the time
 @app.route("/api/run_mapper", methods=["POST"])
 def run_mapper():
     processId = uuid.uuid4()
@@ -44,43 +45,29 @@ def run_mapper():
         f1.save(target)
 
     output = OUTPUT_FOLDER + f"{processId}.csv"
+    logFile = OUTPUT_FOLDER + f"{processId}.txt"
 
-    # folder structure changes between local and Docker
-    if os.environ.get("FLASK_ENV") == "production":
-        mapper_path = "text2term"
-    else:
-        mapper_path = "ontology-mapper/text2term"
-
-    command = [
-        "python", mapper_path,
-        "-s", source,
-        "-t", target,
-        "-o", output,
-        "-m", request.form["mapper"],
-        "-top", request.form["top_mappings"],
-        "-min", request.form["min_score"],
-        "-iris", request.form["base_iris"],
-        "-g"
-    ]
-
-    if request.form["incl_deprecated"] == "false":
-        command += ["-d"]
-
-    dbFile = OUTPUT_FOLDER + f"{processId}.txt"
-
-    with open(dbFile, "w") as f:
+    with open(logFile, "w") as f:
         f.write("Initializing mapper...\n")
 
-    def run_mapper(dbFile):
-        with Popen(command, stdout=PIPE, bufsize=1, universal_newlines=True) as p:
-            for line in p.stdout:
-                with open(dbFile, "a") as f:
-                    f.write(line)  # append line to the appropriate status file
+    def run_mapper(logFile, source, target, output, request):
+        if len(request.form["base_iris"]) > 0:
+            base_iris = tuple(request.form["base_iris"].split(','))
+        else:
+            base_iris = ()
 
-        with open(dbFile, "a") as f:
+        df = text2term.map_file(source, target, base_iris=base_iris, \
+            excl_deprecated=(request.form["incl_deprecated"] == "false"), \
+            max_mappings=int(request.form["top_mappings"]), \
+            min_score=float(request.form["min_score"]), \
+            mapper=text2term.Mapper(request.form["mapper"]), output_file=output, \
+            save_graphs=True, save_mappings=True, use_cache=False)
+
+        with open(logFile, "a") as f:
+            f.write(df.to_string())
             f.write("DONE")  # overwrite file
 
-    new_thread = Thread(target=run_mapper, args=(dbFile,))
+    new_thread = Thread(target=run_mapper, args=(logFile, source, target, output, request,))
 
     new_thread.start()
 
@@ -88,7 +75,7 @@ def run_mapper():
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 
-
+# Routing to check how the current process is running
 @app.route("/api/current_status", methods=["GET"])
 def current_status():
     processId = request.args["processId"]
@@ -98,7 +85,7 @@ def current_status():
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 
-
+# Routing to upload old results and continue working with them
 @app.route("/api/old_results", methods=["POST"])
 def old_results():
     processId = uuid.uuid4()
@@ -115,7 +102,7 @@ def old_results():
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 
-
+# Routing to download the csv of the mapping data
 @app.route("/api/download_csv", methods=["GET"])
 def download_csv():
     processId = request.args["processId"]
@@ -124,7 +111,7 @@ def download_csv():
     resp.headers["Access-Control-Allow-Origin"] = "Content-Type"
     return resp
 
-
+# Routing to download the JSON graph of the mapping data for later usage
 @app.route("/api/download_graph_json", methods=["GET"])
 def download_graph_json():
     processId = request.args["processId"]
@@ -133,7 +120,7 @@ def download_graph_json():
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 
-
+# Main function to run the app
 if __name__ == "__main__":
     production_host = 'text2term.hms.harvard.edu'
     development_host = 'localhost'

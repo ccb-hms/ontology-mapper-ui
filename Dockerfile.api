@@ -6,13 +6,8 @@ COPY flask-api/* ./
 RUN mkdir output
 RUN mkdir input
 ## mainly for easy testing; should be able to get rid of when can stop navigating directly to results
-# COPY flask-api/ontology-mapper/* ./ontology-mapper/
-RUN pip install -r ./requirements.txt
 RUN pip install -r ./requirements-flask.txt
 ENV FLASK_ENV production
-
-# WORKDIR ./ontology-mapper
-RUN pip install .
 
 WORKDIR /app
 
