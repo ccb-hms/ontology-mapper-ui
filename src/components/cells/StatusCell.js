@@ -4,7 +4,7 @@ import { default as _ } from "lodash";
 export default function StatusCell(props) {
     return props.selected ? (
         <DropdownCell
-            options={["unapproved", "approved", "rejected"]}
+            options={["unapproved", "approved", "compound"]}
             default={"unapproved"}
             edited={props.edited}
             setEdit={props.setEdit}

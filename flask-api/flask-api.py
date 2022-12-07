@@ -1,4 +1,6 @@
 from flask import Flask, request, Response, send_file, send_from_directory
+from threading import Thread
+import sys
 import json
 import uuid
 import os
@@ -50,24 +52,33 @@ def run_mapper():
     with open(logFile, "w") as f:
         f.write("Initializing mapper...\n")
 
-    def run_mapper(logFile, source, target, output, request):
-        if len(request.form["base_iris"]) > 0:
-            base_iris = tuple(request.form["base_iris"].split(','))
-        else:
-            base_iris = ()
+    if len(request.form["base_iris"]) > 0:
+        base_iris = tuple(request.form["base_iris"].split(','))
+    else:
+        base_iris = ()
 
-        df = text2term.map_file(source, target, base_iris=base_iris, \
-            excl_deprecated=(request.form["incl_deprecated"] == "false"), \
-            max_mappings=int(request.form["top_mappings"]), \
-            min_score=float(request.form["min_score"]), \
-            mapper=text2term.Mapper(request.form["mapper"]), output_file=output, \
-            save_graphs=True, save_mappings=True, use_cache=False)
+    excl_deprecated = (request.form["incl_deprecated"] == "false")
+    max_mappings = int(request.form["top_mappings"])
+    min_score = float(request.form["min_score"])
+    mapper = text2term.Mapper(request.form["mapper"])
 
-        with open(logFile, "a") as f:
-            f.write(df.to_string())
-            f.write("DONE")  # overwrite file
+    def run_mapper(logFile, source, target, output, base_iris, \
+                    excl_deprecated, max_mappings, min_score, mapper):
+        with app.test_request_context():
+            with open(logFile, "a") as f:
+                sys.stdout = f
+                text2term.map_file(source, target, base_iris=base_iris, \
+                    excl_deprecated=excl_deprecated, \
+                    max_mappings=max_mappings, \
+                    min_score=min_score, \
+                    mapper=mapper, output_file=output, \
+                    save_graphs=True, save_mappings=True, use_cache=False)
 
-    new_thread = Thread(target=run_mapper, args=(logFile, source, target, output, request,))
+                f.write("\nDONE")  # overwrite file
+
+    new_thread = Thread(target=run_mapper, \
+                        args=(logFile, source, target, output, base_iris, \
+                            excl_deprecated, max_mappings, min_score, mapper,))
 
     new_thread.start()
 
