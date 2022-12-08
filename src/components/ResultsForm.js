@@ -4,6 +4,7 @@ import { Dropzone, FileItem } from "@dropzone-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import getUrlBase from "./UrlBase.js";
+import Footer from "./Footer";
 
 function ResultsForm() {
     const navigate = useNavigate();

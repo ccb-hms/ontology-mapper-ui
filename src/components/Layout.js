@@ -1,5 +1,6 @@
 import "./Layout.css";
 import NavBar from "./NavBar";
+import Footer from "./Footer";
 export default function Layout(props) {
     return (
         <div className="App">
@@ -14,6 +15,9 @@ export default function Layout(props) {
             </div>
             <hr />
             {props.content}
+            <div>
+                <Footer />
+            </div>
         </div>
     );
 }
