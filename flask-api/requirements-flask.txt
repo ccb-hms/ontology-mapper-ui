@@ -1,3 +1,5 @@
 gunicorn
 flask
 python-dotenv
+text2term
+pandas

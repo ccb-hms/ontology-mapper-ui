@@ -17,7 +17,7 @@ const table_columns = [
     "Ontology",
     "Mapping Type",
     "View Alternate Mappings",
-    "Approve or Reject Mappings",
+    "Approve Mappings",
 ];
 
 const csv_headers = _.concat(
