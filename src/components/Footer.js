@@ -3,9 +3,10 @@ function Footer() {
 	return (
 		<div className="footer">
 			<br />
-			<span>Version 1.0.0</span>
+			<span>UI Version 1.0.0 &#183; </span>
+			<span>Text2term Version 1.1.0</span>
 			<br />
-			<span>Copyright Harvard Medical School</span>
+			<span>&copy; Center for Computational Biomedicine at Harvard Medical School 2022</span>
 		</div>
 	);
 }
