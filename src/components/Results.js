@@ -8,15 +8,15 @@ import TermGraphsDownload from "./TermGraphsDownload";
 import TermRows from "./TermRows";
 import PageBar from "./PageBar";
 import Layout from "./Layout";
+import Tooltip from "./Tooltip";
 
 const table_columns = [
-    "#",
+    "Alt Mappings",
     "Source Term",
     "Mapped Term",
     "Score",
     "Ontology",
     "Mapping Type",
-    "View Alternate Mappings",
     "Approve Mappings",
 ];
 
@@ -194,7 +194,7 @@ export default function Results(props) {
                 <b>
                     {`${sourceTerms.length} terms total; ${
                         statusCounts.approved || 0
-                    } approved, ${statusCounts.rejected || 0} rejected, ${
+                    } approved, ${statusCounts.compound || 0} compound, ${
                         statusCounts.unapproved || 0
                     } unapproved`}
                 </b>
@@ -227,7 +227,6 @@ export default function Results(props) {
                                 className={
                                     _.indexOf(
                                         [
-                                            "#",
                                             "Source Term",
                                             "Mapped Term",
                                             "Score",

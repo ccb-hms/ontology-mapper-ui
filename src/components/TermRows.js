@@ -33,9 +33,20 @@ function TermRows(props) {
             (editedCell === EditedCell.ViewAltMappings || row.selected) && (
                 <Fragment key={index}>
                     <tr className={!row.selected ? "alt-row" : ""}>
-                        <td className="fixed-td" key="term_number">
-                            {row.term_number}
-                        </td>
+                        <ViewAltMappingsCell
+                            selected={row.selected}
+                            disabled={alts.length === 0}
+                            edited={editedCell === EditedCell.ViewAltMappings}
+                            toggleView={() =>
+                                editedCell === EditedCell.ViewAltMappings
+                                    ? setEditedCell(null)
+                                    : setEditedCell(EditedCell.ViewAltMappings)
+                            }
+                            setSelected={(e) => {
+                                props.setSelected(row.term_alt_number);
+                                resetEditedCell(e);
+                            }}
+                        />
                         <td className="fixed-td" key="source_term">
                             {row.source_term}
                         </td>
@@ -75,20 +86,6 @@ function TermRows(props) {
                                 )
                             }
                             resetEditedCell={resetEditedCell}
-                        />
-                        <ViewAltMappingsCell
-                            selected={row.selected}
-                            disabled={alts.length === 0}
-                            edited={editedCell === EditedCell.ViewAltMappings}
-                            toggleView={() =>
-                                editedCell === EditedCell.ViewAltMappings
-                                    ? setEditedCell(null)
-                                    : setEditedCell(EditedCell.ViewAltMappings)
-                            }
-                            setSelected={(e) => {
-                                props.setSelected(row.term_alt_number);
-                                resetEditedCell(e);
-                            }}
                         />
                         <StatusCell
                             selected={row.selected}
