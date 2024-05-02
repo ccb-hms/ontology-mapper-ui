@@ -1,5 +1,5 @@
 gunicorn
 flask
 python-dotenv
-text2term
 pandas
+text2term==4.1.2
