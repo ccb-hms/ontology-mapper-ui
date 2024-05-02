@@ -57,7 +57,7 @@ def run_mapper():
     else:
         base_iris = ()
 
-    excl_deprecated = (request.form["incl_deprecated"] == "false")
+    excl_deprecated = (request.form["excl_deprecated"] == "true")
     max_mappings = int(request.form["top_mappings"])
     min_score = float(request.form["min_score"])
     mapper = text2term.Mapper(request.form["mapper"])
@@ -67,13 +67,13 @@ def run_mapper():
         with app.test_request_context():
             with open(logFile, "a") as f:
                 sys.stdout = f
-                text2term.map_file(source, target, base_iris=base_iris, \
+                mappings = text2term.map_terms(source, target, base_iris=base_iris, \
                     excl_deprecated=excl_deprecated, \
                     max_mappings=max_mappings, \
                     min_score=min_score, \
                     mapper=mapper, output_file=output, \
-                    save_graphs=True, save_mappings=True, use_cache=False)
-
+                    save_graphs=True, save_mappings=False, use_cache=False)
+                mappings.to_csv(output, index=False, mode='a')
                 f.write("\nDONE")  # overwrite file
 
     new_thread = Thread(target=run_mapper, \

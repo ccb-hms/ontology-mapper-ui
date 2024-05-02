@@ -71,7 +71,6 @@ function FileTextUpload({ ontology, setOutput }) {
                         {ontology ? (
                             <input
                                 style={{ width: "100%" }}
-                                type="url"
                                 name={name + "text-field"}
                                 placeholder="(ontology acronyms when mapping with BioPortal/Zooma)"
                                 value={textField}

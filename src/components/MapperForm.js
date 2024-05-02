@@ -14,11 +14,12 @@ function MapperForm() {
     const [topMappings, setTopMappings] = useState(3);
     const [minScore, setMinScore] = useState(0.5);
     const [baseIRI, setBaseIRI] = useState("");
-    const [inclDeprecated, setInclDeprecated] = useState(false);
+    const [exclDeprecated, setExclDeprecated] = useState(true);
     const [mapOption, setMapOption] = useState("tfidf");
 
     const [unstructuredTerms, setUnstructuredTerms] = useState(undefined);
     const [ontology, setOntology] = useState(undefined);
+    const [cache, setCache] = useState(false);
     const [currentStatus, setCurrentStatus] = useState(
         "Initializing mapper..."
     );
@@ -112,16 +113,16 @@ function MapperForm() {
         },
 
         {
-            name: "incl_deprecated",
-            label: "Include Deprecated Terms",
-            tip: "Include terms stated as deprecated via owl:deprecated.",
+            name: "excl_deprecated",
+            label: "Exclude Deprecated Terms",
+            tip: "Exclude terms stated as deprecated via owl:deprecated.",
             field: (
                 <input
                     className="form-check-input"
                     type="checkbox"
-                    name="incl_deprecated"
-                    checked={inclDeprecated}
-                    onChange={(e) => setInclDeprecated(!inclDeprecated)}
+                    name="excl_deprecated"
+                    checked={exclDeprecated}
+                    onChange={(e) => setExclDeprecated(!exclDeprecated)}
                 />
             ),
         },
@@ -173,7 +174,7 @@ function MapperForm() {
         formData.append("top_mappings", topMappings);
         formData.append("min_score", minScore);
         formData.append("base_iris", baseIRI);
-        formData.append("incl_deprecated", inclDeprecated);
+        formData.append("excl_deprecated", exclDeprecated);
         formData.append("mapper", mapOption);
 
         const config = {
@@ -211,6 +212,13 @@ function MapperForm() {
     return (
         <div className="form">
             <form onSubmit={handleSubmit}>
+                <div className="ft-upload-area">
+                    <FileTextUpload setOutput={setUnstructuredTerms} />
+                    <div className="vertical-line"></div>
+
+                    <FileTextUpload ontology={true} setOutput={setOntology} />
+                </div>
+                <hr />
                 {mainArgFields.map((d) => (
                     <ArgField {...d} key={d.name} />
                 ))}
@@ -234,12 +242,6 @@ function MapperForm() {
                             ▲ Show Fewer Options ▲
                         </div>
                     )}
-                </div>
-                <hr />
-                <div className="ft-upload-area">
-                    <FileTextUpload setOutput={setUnstructuredTerms} />
-                    <div className="vertical-line"></div>
-                    <FileTextUpload ontology={true} setOutput={setOntology} />
                 </div>
                 {unstructuredTerms && ontology && (
                     <div className="center-btn">
