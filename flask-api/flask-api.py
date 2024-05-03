@@ -30,6 +30,8 @@ def run_mapper():
 
     if "unstructured_terms_text" in request.form:
         # text is list of terms, write to file
+        if not os.path.exists("input"):
+            os.mkdir("input")
         with open(source, 'a+') as f:
             f.write(request.form["unstructured_terms_text"])
     else:
